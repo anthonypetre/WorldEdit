@@ -1731,9 +1731,8 @@ public class EditSession implements Extent, AutoCloseable {
 
         return affected;
     }
-
     /**
-    * Makes a sphere.
+    * Makes a sphere centered in the middle of the target block.
     *
     * @param pos Center of the sphere or ellipsoid
     * @param block The block pattern to use
@@ -1743,7 +1742,22 @@ public class EditSession implements Extent, AutoCloseable {
     * @throws MaxChangedBlocksException thrown if too many blocks are changed
     */
     public int makeSphere(BlockVector3 pos, Pattern block, double radius, boolean filled) throws MaxChangedBlocksException {
-        return makeSphere(pos, block, radius, radius, radius, filled);
+        return makeSphere(pos, block, radius, radius, radius, filled, true);
+    }
+
+    /**
+    * Makes a sphere.
+    *
+    * @param pos Center of the sphere or ellipsoid
+    * @param block The block pattern to use
+    * @param radius The sphere's radius
+    * @param filled If false, only a shell will be generated.
+    * @param centerOnBlockMiddle If true, center sphere on the middle of the block specified. If false, centers on the zero-corner of the block specified.
+    * @return number of blocks changed
+    * @throws MaxChangedBlocksException thrown if too many blocks are changed
+    */
+    public int makeSphere(BlockVector3 pos, Pattern block, double radius, boolean filled, boolean centerOnBlockMiddle) throws MaxChangedBlocksException {
+        return makeSphere(pos, block, radius, radius, radius, filled, centerOnBlockMiddle);
     }
 
     /**
@@ -1755,15 +1769,19 @@ public class EditSession implements Extent, AutoCloseable {
      * @param radiusY The sphere/ellipsoid's largest up/down extent
      * @param radiusZ The sphere/ellipsoid's largest east/west extent
      * @param filled If false, only a shell will be generated.
+     * @param centerOnBlockMiddle If true, center sphere on the middle of the block specified. If false, centers on the zero-corner of the block specified.* 
      * @return number of blocks changed
      * @throws MaxChangedBlocksException thrown if too many blocks are changed
      */
-    public int makeSphere(BlockVector3 pos, Pattern block, double radiusX, double radiusY, double radiusZ, boolean filled) throws MaxChangedBlocksException {
+    public int makeSphere(BlockVector3 pos, Pattern block, double radiusX, double radiusY, double radiusZ, boolean filled, boolean centerOnBlockMiddle) throws MaxChangedBlocksException {
         int affected = 0;
 
-        radiusX += 0.5;
-        radiusY += 0.5;
-        radiusZ += 0.5;
+        if (centerOnBlockMiddle)
+        {
+            radiusX += 0.5;
+            radiusY += 0.5;
+            radiusZ += 0.5;
+        }
 
         final double invRadiusX = 1 / radiusX;
         final double invRadiusY = 1 / radiusY;

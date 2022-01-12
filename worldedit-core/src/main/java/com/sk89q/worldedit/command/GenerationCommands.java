@@ -143,8 +143,10 @@ public class GenerationCommands {
                        @Radii(3)
                            List<Double> radii,
                        @Switch(name = 'r', desc = "Raise the bottom of the sphere to the placement position")
-                           boolean raised) throws WorldEditException {
-        return sphere(actor, session, editSession, pattern, radii, raised, true);
+                           boolean raised,
+                       @Switch(name = 'z', desc = "Center the sphere on the zero-vertex of the target block instead of its center")
+                           boolean centerOnVertex) throws WorldEditException {
+        return sphere(actor, session, editSession, pattern, radii, raised, centerOnVertex, true);
     }
 
     @Command(
@@ -161,6 +163,8 @@ public class GenerationCommands {
                           List<Double> radii,
                       @Switch(name = 'r', desc = "Raise the bottom of the sphere to the placement position")
                           boolean raised,
+                      @Switch(name = 'z', desc = "Center the sphere on the zero-vertex of the target block instead of its center")
+                          boolean centerOnVertex,
                       @Switch(name = 'h', desc = "Make a hollow sphere")
                           boolean hollow) throws WorldEditException {
         double radiusX;
@@ -191,7 +195,7 @@ public class GenerationCommands {
             pos = pos.add(0, (int) radiusY, 0);
         }
 
-        int affected = editSession.makeSphere(pos, pattern, radiusX, radiusY, radiusZ, !hollow);
+        int affected = editSession.makeSphere(pos, pattern, radiusX, radiusY, radiusZ, !hollow, !centerOnVertex);
         if (actor instanceof Player) {
             ((Player) actor).findFreePosition();
         }
